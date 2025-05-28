@@ -9,18 +9,26 @@ const Statistics = ({votes }) => {
     const average = (votes.good - votes.bad) / all
     const positive = (votes.good / all) * 100
 
-    const StatisticLine = ({ text, value }) => (<p>{text} {value}</p>)
+    const StatisticLine = ({ text, value }) => (
+    <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+    </tr>
+  )
 
 
     return (
     <div>
-        <StatisticLine text="good" value ={votes.good} />
-        <StatisticLine text="neutral" value ={votes.neutral} />
-        <StatisticLine text="bad" value ={votes.bad} />
-        <StatisticLine text="all" value ={all} />
-        <StatisticLine text="average" value ={average} />
-        <StatisticLine text="positive" value ={positive} />
-        
+      <table>
+        <tbody>
+          <StatisticLine text="good" value={votes.good} />
+          <StatisticLine text="neutral" value={votes.neutral} />
+          <StatisticLine text="bad" value={votes.bad} />
+          <StatisticLine text="all" value={all} />
+          <StatisticLine text="average" value={average} />
+          <StatisticLine text="positive %" value={positive} />
+        </tbody>
+      </table>
     </div>
     )
 }
