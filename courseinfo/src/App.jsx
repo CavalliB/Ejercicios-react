@@ -14,10 +14,20 @@ const Content = ({ parts }) => (
   </div>
 );
 
+const Total = ({ parts }) => {
+  const total = parts.reduce((sum, part) => sum + part.exercises, 0);
+  return (
+    <p>
+      <b>Total of {total} exercises</b>
+    </p>
+  );
+};
+
 const Course = ({ course }) => (
   <div>
     <Header course={course.name} />
     <Content parts={course.parts} />
+    <Total parts={course.parts} />
   </div>
 );
 
@@ -43,8 +53,12 @@ const App = () => {
       },
     ],
   };
-  console.log(course);
-  return <Course course={course} />;
+
+  return (
+    <div>
+      <Course course={course} />
+    </div>
+  );
 };
 
 export default App;
