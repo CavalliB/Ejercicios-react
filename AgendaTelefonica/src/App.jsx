@@ -17,11 +17,17 @@ const App = () => {
       name: newName,
       id: persons.length + 1,
     };
+    if (persons.some((person) => person.name === newName)) {
+      alert(`${newName} is already added to phonebook`);
+      return;
+    }
 
-    axios.post("http://localhost:3001/persons", personObject).then((response) => {
-      setPersons(persons.concat(response.data));
-      setNewName("");
-    });
+    axios
+      .post("http://localhost:3001/persons", personObject)
+      .then((response) => {
+        setPersons(persons.concat(response.data));
+        setNewName("");
+      });
   };
 
   const handleNoteChange = (event) => {
@@ -34,7 +40,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <form onSubmit={addPerson}>
         <div>
-          name: <input value= {newName} onChange={handleNoteChange} />
+          name: <input value={newName} onChange={handleNoteChange} />
         </div>
         <div>
           <button type="submit">add</button>
@@ -42,8 +48,8 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       {persons.map((person) => (
-          <li key={person.id}>{person.name}</li>
-        ))}
+        <li key={person.id}>{person.name}</li>
+      ))}
     </div>
   );
 };
