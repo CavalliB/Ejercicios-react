@@ -49,10 +49,10 @@ const App = () => {
   };
 
   const personsToShow = newFilter
-  ? persons.filter(person =>
-      person.name.toLowerCase().includes(newFilter.toLowerCase())
-    )
-  : persons;
+    ? persons.filter((person) =>
+        person.name.toLowerCase().includes(newFilter.toLowerCase())
+      )
+    : persons;
 
   return (
     <div>
