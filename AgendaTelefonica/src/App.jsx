@@ -5,6 +5,7 @@ const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [newFilter, setNewFilter] = useState("");
 
   useEffect(() => {
     axios.get("http://localhost:3001/persons").then((response) => {
@@ -42,9 +43,25 @@ const App = () => {
     setNewNumber(event.target.value);
   };
 
+  const handleFilterChange = (event) => {
+    console.log(event.target.value);
+    setNewFilter(event.target.value);
+  };
+
+  const personsToShow = newFilter
+  ? persons.filter(person =>
+      person.name.toLowerCase().includes(newFilter.toLowerCase())
+    )
+  : persons;
+
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h2>PhoneBook</h2>
+      <div>
+        filter shown with:{" "}
+        <input value={newFilter} onChange={handleFilterChange}></input>
+      </div>
+      <h2>Add a new</h2>
       <form onSubmit={addPerson}>
         <div>
           name: <input value={newName} onChange={handleNameChange} />
@@ -57,8 +74,10 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map((person) => (
-        <li key={person.id}>{person.name}{" "}{person.number}</li>
+      {personsToShow.map((person) => (
+        <li key={person.id}>
+          {person.name} {person.number}
+        </li>
       ))}
     </div>
   );
