@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import PersonsFilter from "./Filter";
+import PersonsList from "./Persons";
+import PersonForm from "./PersonForm";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -16,9 +19,9 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
     const personObject = {
+      id: persons.length + 1,
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
     };
     if (persons.some((person) => person.name === newName)) {
       alert(`${newName} is already added to phonebook`);
@@ -34,12 +37,10 @@ const App = () => {
   };
 
   const handleNameChange = (event) => {
-    console.log(event.target.value);
     setNewName(event.target.value);
   };
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value);
     setNewNumber(event.target.value);
   };
 
@@ -48,37 +49,23 @@ const App = () => {
     setNewFilter(event.target.value);
   };
 
-  const personsToShow = newFilter
-    ? persons.filter((person) =>
-        person.name.toLowerCase().includes(newFilter.toLowerCase())
-      )
-    : persons;
-
   return (
     <div>
       <h2>PhoneBook</h2>
       <div>
         filter shown with:{" "}
-        <input value={newFilter} onChange={handleFilterChange}></input>
+        <PersonsFilter newfilter={newFilter} onChange={handleFilterChange} />
       </div>
       <h2>Add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm
+        addPerson={addPerson}
+        newName={newName}
+        handleNameChange={handleNameChange}
+        newNumber={newNumber}
+        handleNumberChange={handleNumberChange}
+      />
       <h2>Numbers</h2>
-      {personsToShow.map((person) => (
-        <li key={person.id}>
-          {person.name} {person.number}
-        </li>
-      ))}
+      <PersonsList persons={persons} filter={newFilter} />
     </div>
   );
 };
