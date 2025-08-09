@@ -12,12 +12,10 @@ const App = () => {
   const [newFilter, setNewFilter] = useState("");
 
   useEffect(() => {
-    personService.getAll()
-  .then(initialPersons => {
-    setPersons(initialPersons)
-  })
+    personService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
-  
+  });
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -31,18 +29,20 @@ const App = () => {
       return;
     }
 
-    personService.create(personObject).then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
+    personService.create(personObject).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
       setNewName(""), setNewNumber("");
     });
   };
 
-  
   const deletePerson = (id) => {
-  personService.deletePerson(id).then(() => {
-    setPersons(persons.filter(person => person.id !== id));
-  });
-};
+    const person = persons.find((p) => p.id === id);
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService.deletePerson(id).then(() => {
+        setPersons(persons.filter((person) => person.id !== id));
+      });
+    }
+  };
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -73,7 +73,11 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <PersonsList persons={persons} filter={newFilter} deletePerson={deletePerson}/>
+      <PersonsList
+        persons={persons}
+        filter={newFilter}
+        deletePerson={deletePerson}
+      />
     </div>
   );
 };
