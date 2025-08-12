@@ -15,7 +15,7 @@ const App = () => {
     personService.getAll().then((initialPersons) => {
       setPersons(initialPersons);
     });
-  });
+  }, []);
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -25,7 +25,16 @@ const App = () => {
       number: newNumber,
     };
     if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+      const person = persons.find((p) => p.name === newName);
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        const updatedPerson = { ...person, number: newNumber };
+        personService.update(person.id, updatedPerson).then((returnedPerson) => {
+          setPersons(
+            persons.map((p) => (p.id !== person.id ? p : returnedPerson))
+          );
+          setNewNumber("");
+        });
+      }
       return;
     }
 
