@@ -4,12 +4,14 @@ import PersonsFilter from "./Filter";
 import PersonsList from "./Persons";
 import PersonForm from "./PersonForm";
 import personService from "./services/db";
+import Notification from "./Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -20,24 +22,37 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
     const personObject = {
-      id: persons.length + 1,
       name: newName,
       number: newNumber,
     };
     if (persons.some((person) => person.name === newName)) {
       const person = persons.find((p) => p.name === newName);
-      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
         const updatedPerson = { ...person, number: newNumber };
-        personService.update(person.id, updatedPerson).then((returnedPerson) => {
-          setPersons(
-            persons.map((p) => (p.id !== person.id ? p : returnedPerson))
-          );
-          setNewNumber("");
-        });
+        personService
+          .update(person.id, updatedPerson)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((p) => (p.id !== person.id ? p : returnedPerson))
+            );
+            setNewNumber("");
+          });
       }
+      setErrorMessage(`modded '${person.name}'`);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+
       return;
     }
-
+    setErrorMessage(`added '${newName}'`);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 5000);
     personService.create(personObject).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
       setNewName(""), setNewNumber("");
@@ -69,6 +84,7 @@ const App = () => {
   return (
     <div>
       <h2>PhoneBook</h2>
+      <Notification message={errorMessage} />
       <div>
         filter shown with:{" "}
         <PersonsFilter newfilter={newFilter} onChange={handleFilterChange} />
