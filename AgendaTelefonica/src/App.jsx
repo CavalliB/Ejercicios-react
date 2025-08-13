@@ -12,6 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
+  const [stateNotify, SetStateNotify] = useState('good');
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -40,16 +41,25 @@ const App = () => {
               persons.map((p) => (p.id !== person.id ? p : returnedPerson))
             );
             setNewNumber("");
+          })
+          .catch((error) => {
+            setErrorMessage(`Information of '${person.name}' has already been removed from server`);
+            SetStateNotify('bad')
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 5000);
           });
+        setPersons(persons.filter((p) => p.id !== person.id));
       }
       setErrorMessage(`modded '${person.name}'`);
+      SetStateNotify('good')
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
-
       return;
     }
     setErrorMessage(`added '${newName}'`);
+    SetStateNotify('good')
     setTimeout(() => {
       setErrorMessage(null);
     }, 5000);
@@ -84,7 +94,7 @@ const App = () => {
   return (
     <div>
       <h2>PhoneBook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage} stateNotify={stateNotify} />
       <div>
         filter shown with:{" "}
         <PersonsFilter newfilter={newFilter} onChange={handleFilterChange} />
