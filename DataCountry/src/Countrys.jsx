@@ -1,0 +1,53 @@
+const CountrysList = ({ countrys, newFilter }) => {
+  const CountrysToShow = newFilter
+    ? countrys.filter((Country) =>
+        Country.name.common.toLowerCase().includes(newFilter.toLowerCase())
+      )
+    : countrys;
+
+  if (CountrysToShow.length >= 10) {
+    return "Too many matches, specify another filter";
+  }
+  if (CountrysToShow.length === 1) {
+    return (
+      <>
+        {CountrysToShow.map((country) => (
+          <div key={country.cca3}>
+            <h1>{country.name.common}</h1>
+            <div>
+              {"Capital "}
+              {country.capital}
+            </div>
+            <div>
+              {"Area "}
+              {country.area}
+            </div>
+            <h2>Languages</h2>
+            <ul>
+              {Object.values(country.languages).map((lang) => (
+                <li key={lang}>{lang}</li>
+              ))}
+            </ul>
+            <div>
+              <img
+                src={`https://flagcdn.com/w320/${country.cca2.toLowerCase()}.png`}
+                alt=""
+              />
+            </div>
+          </div>
+        ))}
+      </>
+    );
+  }
+
+  return (
+    <div>
+      <ul>
+        {CountrysToShow.map((country) => (
+          <li key={country.cca3}>{country.name.common}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+export default CountrysList;
