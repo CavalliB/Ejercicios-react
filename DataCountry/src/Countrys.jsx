@@ -1,18 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const CountrysList = ({ countrys, newFilter }) => {
+  const api_key = import.meta.env.VITE_SOME_KEY;
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [time, setNewTime] = useState(null);
+
   const CountrysToShow = newFilter
     ? countrys.filter((Country) =>
         Country.name.common.toLowerCase().includes(newFilter.toLowerCase())
       )
     : countrys;
 
+  useEffect(() => {
+    if (CountrysToShow.length === 1) {
+      setSelectedCountry(CountrysToShow[0]);
+    }
+  }, [CountrysToShow.length]);
+
+  useEffect(() => {
+    if (!selectedCountry) {
+      setNewTime(null);
+      return;
+    }
+    axios
+      .get(
+        `http://api.weatherapi.com/v1/current.json?key=${api_key}&q=${selectedCountry.capital[0]}&aqi=no`
+      )
+      .then((response) => {
+        setNewTime(response.data);
+      })
+      .catch((err) => {
+        console.error("Error al cargar el clima:", err);
+      });
+  }, [selectedCountry]);
+
   if (CountrysToShow.length >= 10) {
     return "Too many matches, specify another filter";
   }
   if (CountrysToShow.length === 1) {
-    return <CountryDetail country={CountrysToShow[0]} />;
+    return <CountryDetail country={CountrysToShow[0]} time={time} />;
   }
 
   return (
@@ -25,12 +52,14 @@ const CountrysList = ({ countrys, newFilter }) => {
           </li>
         ))}
       </ul>
-      {selectedCountry && <CountryDetail country={selectedCountry} />}
+      {selectedCountry && (
+        <CountryDetail country={selectedCountry} time={time} />
+      )}
     </div>
   );
 };
 
-const CountryDetail = ({ country }) => (
+const CountryDetail = ({ country, time }) => (
   <>
     <h1>{country.name.common}</h1>
     <div>
@@ -53,6 +82,19 @@ const CountryDetail = ({ country }) => (
         alt=""
       />
     </div>
+    {time ? (
+      <div>
+        Temperatura: {time.current.temp_c}°C
+        <br />
+        Condición: {time.current.condition.text}
+        <br />
+        Viento: {time.current.wind_mph}
+        <br />
+        <img src={`${time.current.condition.icon}`} alt="" />
+      </div>
+    ) : (
+      <div>Cargando clima…</div>
+    )}
   </>
 );
 export default CountrysList;
