@@ -1,3 +1,5 @@
+import { TextField, Button, Box } from "@mui/material";
+
 const PersonForm = ({
   addPerson,
   newName,
@@ -5,18 +7,32 @@ const PersonForm = ({
   newNumber,
   handleNumberChange,
 }) => {
-    return(
-  <form onSubmit={addPerson}>
-    <div>
-      name: <input value={newName} onChange={handleNameChange} />
-    </div>
-    <div>
-      number: <input value={newNumber} onChange={handleNumberChange} />
-    </div>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
-  )
+  return (
+    <Box
+      component="form"
+      onSubmit={addPerson}
+      display="flex"
+      flexDirection="column"
+      gap={2}
+      width="100%"
+    >
+      <TextField
+        label="Name"
+        value={newName}
+        onChange={handleNameChange}
+        fullWidth
+      />
+      <TextField
+        label="Number"
+        value={newNumber}
+        onChange={handleNumberChange}
+        fullWidth
+      />
+      <Button type="submit" variant="contained">
+        Add
+      </Button>
+    </Box>
+  );
 };
+
 export default PersonForm;
