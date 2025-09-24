@@ -5,6 +5,20 @@ import PersonsList from "./Persons";
 import PersonForm from "./PersonForm";
 import personService from "./services/db";
 import Notification from "./Notification";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { Container, Box, Typography, TextField, Button, List, ListItem, IconButton } from "@mui/material";
+
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#52abffff',
+    },
+  },
+});
+
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -92,29 +106,49 @@ const App = () => {
   };
 
   return (
-    <div>
-      <h2>PhoneBook</h2>
-      <Notification message={errorMessage} stateNotify={stateNotify} />
-      <div>
-        filter shown with:{" "}
-        <PersonsFilter newfilter={newFilter} onChange={handleFilterChange} />
-      </div>
-      <h2>Add a new</h2>
-      <PersonForm
-        addPerson={addPerson}
-        newName={newName}
-        handleNameChange={handleNameChange}
-        newNumber={newNumber}
-        handleNumberChange={handleNumberChange}
-      />
-      <h2>Numbers</h2>
-      <PersonsList
-        persons={persons}
-        filter={newFilter}
-        deletePerson={deletePerson}
-      />
-    </div>
-  );
+  <ThemeProvider theme={darkTheme}>
+    <CssBaseline />
+    <Container maxWidth="sm">
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={3}
+        mt={4}
+      >
+        <Typography variant="h4">PhoneBook</Typography>
+
+        <Notification message={errorMessage} stateNotify={stateNotify} />
+
+        <TextField
+          label="Filter shown with"
+          variant="outlined"
+          value={newFilter}
+          onChange={handleFilterChange}
+          fullWidth
+        />
+
+        <Typography variant="h5">Add a new</Typography>
+        <PersonForm
+          addPerson={addPerson}
+          newName={newName}
+          handleNameChange={handleNameChange}
+          newNumber={newNumber}
+          handleNumberChange={handleNumberChange}
+        />
+
+        <Typography variant="h5">Numbers</Typography>
+        <PersonsList
+          persons={persons}
+          filter={newFilter}
+          deletePerson={deletePerson}
+        />
+      </Box>
+    </Container>
+  </ThemeProvider>
+);
+
 };
 
+    
 export default App;
